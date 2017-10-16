@@ -1,6 +1,7 @@
 # coding:utf-8
 
 import random
+import math
 
 def select(A, k):
     temp_list = []
@@ -8,7 +9,7 @@ def select(A, k):
     count = 0
 
     # stop recursion
-    if length <= 10:
+    if length <= 5:
         return sorted(A)[k-1]
 
     # Devide A into 5 heap
@@ -20,8 +21,14 @@ def select(A, k):
             temp_list = []
         count += 1
 
-    if len(temp_list) != 0:
+    # < 5 heap fill with infinity
+    try: # check not inf
+        int(temp_list[0]) 
+        while len(temp_list) < 5:
+            temp_list.append(math.inf)
         A.append(temp_list)
+    except:
+        pass
         
     # Now, A have A//5(+1, if A%5 >0) heap
     # sort all heap
@@ -31,15 +38,21 @@ def select(A, k):
 
     # shorted by medians
     A = sorted(A, key = lambda x: x[len(x)//2])
-    # Now, we got median of medians
+
+    # Now, we got the median of medians(MoM)
     MoM_i = len(A[len(A)//2])//2
-    MoM_j = len(A)//2
+
+    if len(A) % 2 == 0:
+        MoM_j = (len(A)//2) - 1
+    else:
+        MoM_j = (len(A)//2)
+
     MoM = A[MoM_j][MoM_i]
 
     # left part
     S1 = []
     temp_list = []    
-    for j in range(0, (len(A)//2)+1):
+    for j in range(0, MoM_j+1):
         temp_list = list(x for x in A[j] if A[j].index(x) <= MoM_i)
         for i in temp_list:
             S1.append(i)
@@ -48,7 +61,7 @@ def select(A, k):
     # right part
     S2 = []
     temp_list = []    
-    for j in range((len(A)//2), len(A)):
+    for j in range(MoM_j, len(A)):
         temp_list = list(x for x in A[j] if A[j].index(x) >= MoM_i)
         for i in temp_list:
             S2.append(i)
@@ -61,16 +74,17 @@ def select(A, k):
 
     new_part = []
     for x in flattern(A):
-        new_part.append(x)
+        try: # filter infinity
+            int(x)
+            new_part.append(x)
+        except:
+            pass
 
     # kth number impossibly in the S2, remove it
     if MoM_rank > k:
         for i in S2:
             if i in new_part:
                 new_part.remove(i)
-        # MoM is the smallest number, and not our target
-        if len(S2) == 0:
-            new_part.remove(MoM)  
 
         return select(new_part, k)
 
@@ -79,6 +93,7 @@ def select(A, k):
         for i in S1:
             if i in new_part:
                 new_part.remove(i)
+
         return select(new_part, k-len(S1))
 
 def flattern(l):
@@ -89,13 +104,13 @@ def flattern(l):
             yield i
 
 def main():
-    length = 150
+    length = 30
     A = [random.randint(0, 100) for i in range(length)]
     B = sorted(A)
     print(A)
     print(B)
-    #k = len(A)//2+1 # find kth elements in array
-    k = 8
+    # find kth elements in array
+    k = 15
     brute = B[k-1]
     
     result = select(A, k)
