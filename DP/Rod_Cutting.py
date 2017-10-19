@@ -21,19 +21,19 @@ def main():
     (r, c) = rod_cutting(n, p)
     # show result
     print("   i|", end="")
-    for i in range(1, 11):
+    for i in range(1, n+1):
        print("{0:2d}|".format(i), end="")
     print()
     print("p[i]|", end="")
-    for i in range(1, 11):
+    for i in range(1, n+1):
         print("{0:2d}|".format(p[i]), end="")
     print()
     print("r[i]|", end="")
-    for i in range(1, 11):
+    for i in range(1, n+1):
         print("{0:2d}|".format(r[i]), end="")
     print()
     print("c[i]|", end="")
-    for i in range(1, 11):
+    for i in range(1, n+1):
         print("{0:2d}|".format(c[i]), end="")
     print()
 
